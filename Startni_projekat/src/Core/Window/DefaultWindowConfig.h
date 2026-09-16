@@ -1,7 +1,7 @@
 #ifndef DEFAULT_WINDOW_CONFIG_H
 #define DEFAULT_WINDOW_CONFIG_H
 
-#define MY_GL_MAJOR_VERSION 3
+#define MY_GL_MAJOR_VERSION 4
 #define MY_GL_MINOR_VERSION 3
 #define GLSL_VERSION_STR "#version 330 core"
 

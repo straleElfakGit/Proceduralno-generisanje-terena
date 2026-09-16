@@ -2,10 +2,15 @@
 #include "Core/Scenes/BasicScene.h"
 #include "Core/Scenes/SceneMenu.h"
 #include "Core/Scenes/TerrainScene.h"
+#include "Logging/Logger.h"
 #include <memory>
 
 int main() 
 {	
+	Logger::Init();
+
+	LOG_INFO("Startujem program");
+
 	ApplicationBase* app = new Application();
 	
 	Scene* currentScene = nullptr;

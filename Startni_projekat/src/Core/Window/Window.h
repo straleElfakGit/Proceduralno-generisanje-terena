@@ -30,7 +30,7 @@ class Window
 {
 private:
 
-    void CreateWindow();
+    void InitializeWindow();
 
     static void InitGLFW();
     static void TerminateGLFW();

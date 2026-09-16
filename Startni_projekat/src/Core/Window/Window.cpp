@@ -1,7 +1,11 @@
 #include <iostream>
 
 #include "Window.h"
-#include "ErrorHandler.h"
+#include "Logging/ErrorHandler.h"
+#include "Logging/Logger.h"
+
+static void APIENTRY OpenGLDebugCallback(GLenum source, GLenum type, unsigned int id, GLenum severity, 
+    GLsizei length, const char* message, const void* userParam);
 
 unsigned char Window::windowCount = 0;
 
@@ -20,11 +24,17 @@ Window::Window(ApplicationBase* app, const WindowData& data)
 {
     this->data.app = app;
     InitGLFW();
-    CreateWindow();
+    InitializeWindow();
 
     glfwMakeContextCurrent(window);
 
     LoadGL();
+
+#ifdef _DEBUG
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(OpenGLDebugCallback, nullptr);
+#endif
 
     SetUserPointer(&this->data);
 
@@ -37,7 +47,7 @@ Window::~Window()
     TerminateGLFW();
 }
 
-void Window::CreateWindow()
+void Window::InitializeWindow()
 {
     window = glfwCreateWindow(data.width, data.height,
         data.title.c_str(), nullptr, nullptr);
@@ -145,4 +155,21 @@ void Window::LoadGL()
 {
     int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     ASSERT_MSG(success, "Could not load OpenGL using GLAD");
+}
+
+static void APIENTRY OpenGLDebugCallback(GLenum source, GLenum type, unsigned int id, GLenum severity,
+    GLsizei length, const char* message, const void* userParam)
+{
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) 
+        return;
+
+    if (severity == GL_DEBUG_SEVERITY_HIGH) {
+        LOG_CRIT("OpenGL Error ({}): {}", id, message);
+    }
+    else if (severity == GL_DEBUG_SEVERITY_MEDIUM) {
+        LOG_WARN("OpenGL Warning ({}): {}", id, message);
+    }
+    else {
+        LOG_INFO("OpenGL Info ({}): {}", id, message);
+    }
 }

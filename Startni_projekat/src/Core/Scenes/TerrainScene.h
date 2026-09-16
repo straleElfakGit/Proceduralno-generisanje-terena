@@ -7,7 +7,7 @@
 #include "shaderClass.h"
 #include "Camera/Camera.h"
 #include "Application/ApplicationBase.h"
-#include "ErrorHandler.h"
+#include "Logging/ErrorHandler.h"
 #include "imgui/imgui.h"
 #include <vector>
 #include "TerrainGeneration/ProceduralTexture2D.h"

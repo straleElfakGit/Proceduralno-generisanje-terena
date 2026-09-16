@@ -5,7 +5,7 @@
 #include "shaderClass.h"
 #include "Camera/Camera.h"
 #include "Application/ApplicationBase.h"
-#include "ErrorHandler.h"
+#include "Logging/ErrorHandler.h"
 #include "imgui/imgui.h"
 
 class BasicScene : public Scene
