@@ -156,6 +156,7 @@
     <ClCompile Include="src\Core\Scenes\BasicScene.cpp" />
     <ClCompile Include="src\Core\Scenes\SceneMenu.cpp" />
     <ClCompile Include="src\Core\Scenes\TerrainScene.cpp" />
+    <ClCompile Include="src\Core\TerrainGeneration\ProceduralTexture2D.cpp" />
     <ClCompile Include="src\Core\TerrainGeneration\Terrain.cpp" />
     <ClCompile Include="src\Core\Window\Window.cpp" />
     <ClCompile Include="src\Graphics\Buffers\VAOLayout.cpp" />
@@ -190,10 +191,13 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Application\Application.h" />
     <ClInclude Include="src\Core\Application\ApplicationBase.h" />
+    <ClInclude Include="src\Core\Noise\FractalNoise.h" />
+    <ClInclude Include="src\Core\Noise\PerlinNoise.h" />
     <ClInclude Include="src\Core\Scenes\BasicScene.h" />
     <ClInclude Include="src\Core\Scenes\Scene.h" />
     <ClInclude Include="src\Core\Scenes\SceneMenu.h" />
     <ClInclude Include="src\Core\Scenes\TerrainScene.h" />
+    <ClInclude Include="src\Core\TerrainGeneration\ProceduralTexture2D.h" />
     <ClInclude Include="src\Core\TerrainGeneration\Terrain.h" />
     <ClInclude Include="src\Core\TerrainGeneration\TerrainVertex.h" />
     <ClInclude Include="src\Core\Timer.h" />

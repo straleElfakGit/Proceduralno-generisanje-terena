@@ -20,36 +20,16 @@ std::vector<float> TerrainScene::GenerateWaveHeightMap(unsigned int width, unsig
 	return heightMap;
 }
 
-std::vector<float> TerrainScene::GenerateIslandHeightMap(uint32_t width, uint32_t height)
-{
-	std::vector<float> heightMap(width * height);
-
-	float centerX = width / 2.0f;
-	float centerY = height / 2.0f;
-	float maxRadius = std::min(centerX, centerY);
-
-	for (uint32_t y = 0; y < height; ++y)
-	{
-		for (uint32_t x = 0; x < width; ++x)
-		{
-			float dx = (x - centerX) / maxRadius;
-			float dy = (y - centerY) / maxRadius;
-			float distance = std::sqrt(dx * dx + dy * dy);
-
-			float h = std::max(0.0f, 1.0f - distance);
-
-			heightMap[y * width + x] = h;
-		}
-	}
-
-	return heightMap;
-}
-
 TerrainScene::TerrainScene(ApplicationBase* app) : Scene(app)
 {
+	m_NoiseMap = ProceduralTexture2D::Create(400, 400);
+	m_NoiseMap->SetScale(220.0);
+
+	m_NoiseMap->GenerateValues();
+
 	glm::uvec2 terrainSize(400, 400);
 	std::vector<float> testMap = GenerateWaveHeightMap(terrainSize.x, terrainSize.y);
-	terrainPtr = Terrain::CreateUniq(terrainSize, testMap);
+	terrainPtr = Terrain::CreateUniq(terrainSize, m_NoiseMap->GetValues());
 	terrainPtr->SetHeightScale(10.0f);
 	terrainPtr->SetTileScale(0.125f);
 	terrainPtr->UpdateMembers();
@@ -70,6 +50,26 @@ void TerrainScene::Update(float deltaTime)
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse)
 		cameraPtr->Inputs(win, deltaTime, data->width, data->height);
+
+	float time = timer.ElapsedSeconds();
+	float angle = time * sunVelocity;
+
+	glm::vec3 sunPos;
+	sunPos.x = std::cos(angle);
+	sunPos.y = std::sin(angle);
+	sunPos.z = 0.3f;
+
+	glm::vec3 sunDir = glm::normalize(-sunPos);
+
+	float dayFactor = glm::smoothstep(-0.1f, 0.2f, sunPos.y);
+
+	glm::vec3 currentSunColor = glm::mix(nightSunColor, daySunColor, dayFactor);
+	glm::vec3 currentAmbient = glm::mix(nightAmbientColor, dayAmbientColor, dayFactor);
+
+	shaderPtr->Activate();
+	shaderPtr->setVec3("sunDirection", sunDir);
+	shaderPtr->setVec3("sunColor", currentSunColor);
+	shaderPtr->setVec3("ambientColor", currentAmbient);
 }
 
 void TerrainScene::Render()
@@ -90,6 +90,16 @@ void TerrainScene::Render()
 
 void TerrainScene::OnImGuiRender()
 {
+	ImGui::SliderFloat("Sun Velocity", &sunVelocity, 0.0f, 3.0f);
+
+	if (ImGui::Button("Reset Time"))
+	{
+		timer.Reset();
+	}
+
+	float angle = timer.ElapsedSeconds() * sunVelocity;
+	bool isDay = std::sin(angle) > 0.0f;
+	ImGui::Text("Status: %s", isDay ? "Dan" : "Noc");
 }
 
 void TerrainScene::OnScroll(double xoffset, double yoffset)

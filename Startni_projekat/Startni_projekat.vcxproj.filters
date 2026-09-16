@@ -120,6 +120,9 @@
     <ClCompile Include="src\Core\Scenes\TerrainScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\TerrainGeneration\ProceduralTexture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Buffers\EBO.h">
@@ -249,6 +252,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Scenes\TerrainScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\PerlinNoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\FractalNoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\TerrainGeneration\ProceduralTexture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
