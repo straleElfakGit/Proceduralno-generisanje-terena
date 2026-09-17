@@ -24,6 +24,7 @@ public:
 	void addBuffer(const VBO<GLfloat>& vbo, const VertexBufferLayout& layout);
 	void addBuffer(const VBO<Vertex>& vbo, const VertexBufferLayout& layout);
 	void addBuffer(const VBO<TerrainVertex>& vbo, const VertexBufferLayout& layout);
+	void addBuffer(const VBO<PlanetVertex>& vbo, const VertexBufferLayout& layout);
 
 	virtual void Bind() const override;
 	virtual void Unbind() const override;

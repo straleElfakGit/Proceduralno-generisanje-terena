@@ -45,6 +45,12 @@ void VAOLayout::addBuffer(const VBO<TerrainVertex>& vbo, const VertexBufferLayou
 	addBifferLayout(layout);
 }
 
+void VAOLayout::addBuffer(const VBO<PlanetVertex>& vbo, const VertexBufferLayout& layout)
+{
+	vbo.Bind();
+	addBifferLayout(layout);
+}
+
 void VAOLayout::Bind() const
 {
 	glBindVertexArray(ID);

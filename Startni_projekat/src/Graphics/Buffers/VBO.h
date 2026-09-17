@@ -6,6 +6,7 @@
 #include "GLResource.h"
 #include "Mesh/Vertex.h"
 #include "TerrainGeneration/TerrainVertex.h"
+#include "PlanetGeneration/PlanetVertex.h"
 
 template <typename T>
 class VBO : public GLResource
@@ -17,6 +18,7 @@ public:
 	VBO(const T* vertices, GLsizeiptr size);
 	VBO(std::vector<Vertex>& vertices);
 	VBO(std::vector<TerrainVertex>& verices);
+	VBO(std::vector<PlanetVertex>& verices);
 	~VBO();
 
 	virtual void Bind() const override;
@@ -45,6 +47,14 @@ VBO<T>::VBO(std::vector<TerrainVertex>& vertices)
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(TerrainVertex), vertices.data(), GL_STATIC_DRAW);
+}
+
+template<typename T>
+VBO<T>::VBO(std::vector<PlanetVertex>& vertices)
+{
+	glGenBuffers(1, &ID);
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(PlanetVertex), vertices.data(), GL_STATIC_DRAW);
 }
 
 template<typename T>

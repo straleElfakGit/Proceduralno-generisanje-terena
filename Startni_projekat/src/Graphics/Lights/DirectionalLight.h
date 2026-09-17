@@ -12,6 +12,8 @@ public:
 	DirectionalLight(const glm::vec3 direction);
 	DirectionalLight(const glm::vec3 ambient, const glm::vec3 diffuse, const glm::vec3 specular, const glm::vec3 direction);
 
+	void UpdateDirection(const glm::vec3 direction) { this->direction = direction; }
+
 	virtual void SetShaderProgramParameters(const Shader& shader, const std::string& uniformName) override;
 };
 
