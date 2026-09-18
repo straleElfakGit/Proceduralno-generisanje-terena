@@ -138,6 +138,12 @@
     <ClCompile Include="src\Core\PlanetGeneration\ShapeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Noise\NoiseFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Noise\Noise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Buffers\EBO.h">
@@ -300,6 +306,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\PlanetGeneration\ShapeGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\Noise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\NoiseFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

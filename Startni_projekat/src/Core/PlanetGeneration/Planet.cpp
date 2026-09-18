@@ -6,7 +6,7 @@ std::unique_ptr<Planet> Planet::CreateUniq(float radius, unsigned int resolution
 }
 
 Planet::Planet(float radius, unsigned int resolution) :
-	shapeSettings(radius), resolution(resolution)
+	shapeSettings(radius), resolution(resolution), noise()
 {
 	GeneratePlanet();
 }
@@ -26,7 +26,7 @@ void Planet::GeneratePlanet()
 		glm::vec3(0.0f, 0.0f, -1.0f),
 	};
 
-	ShapeGenerator generator(this->shapeSettings);
+	ShapeGenerator generator(this->shapeSettings, this->noise);
 
 	for (int i = 0; i < 6; i++) {
 		faces[i] = std::make_unique<TerrainFace>(this->resolution, directions[i], generator);
@@ -37,7 +37,7 @@ void Planet::SetResolution(unsigned int res)
 {
 	if (this->resolution != res) {
 		this->resolution = res;
-		ShapeGenerator generator(shapeSettings);
+		ShapeGenerator generator(shapeSettings, this->noise);
 		for (int i = 0; i < 6; i++)
 			if (faces[i] != nullptr)
 				faces[i]->SetResolution(res, generator);
@@ -48,11 +48,20 @@ void Planet::SetRadius(float radius)
 {
 	if (shapeSettings.GetPlanetRadius()!= radius) {
 		shapeSettings.SetPlanetRadius(radius);
-		ShapeGenerator generator(shapeSettings);
+		ShapeGenerator generator(shapeSettings, this->noise);
 		for (int i = 0; i < 6; i++)
 			if (faces[i] != nullptr)
 				faces[i]->UpdateMembers(generator);
 	}
+}
+
+void Planet::SetSeedForNoise(int seed)
+{
+	noise.ChangeDitribution(seed);
+	ShapeGenerator generator(shapeSettings, this->noise);
+	for (int i = 0; i < 6; i++)
+		if (faces[i] != nullptr)
+			faces[i]->UpdateMembers(generator);
 }
 
 void Planet::Render() const {

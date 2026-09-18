@@ -156,6 +156,8 @@
     <ClCompile Include="src\Core\Application\Application.cpp" />
     <ClCompile Include="src\Core\Application\ApplicationBase.cpp" />
     <ClCompile Include="src\Core\Logging\Logger.cpp" />
+    <ClCompile Include="src\Core\Noise\Noise.cpp" />
+    <ClCompile Include="src\Core\Noise\NoiseFilter.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\Planet.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\ShapeGenerator.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\TerrainFace.cpp" />
@@ -200,6 +202,8 @@
     <ClInclude Include="src\Core\Application\ApplicationBase.h" />
     <ClInclude Include="src\Core\Logging\Logger.h" />
     <ClInclude Include="src\Core\Noise\FractalNoise.h" />
+    <ClInclude Include="src\Core\Noise\Noise.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilter.h" />
     <ClInclude Include="src\Core\Noise\PerlinNoise.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Planet.h" />
     <ClInclude Include="src\Core\PlanetGeneration\PlanetVertex.h" />

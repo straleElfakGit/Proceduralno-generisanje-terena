@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <random>
 #include "Scene.h"
 #include "TerrainGeneration/Terrain.h"
 #include "shaderClass.h"

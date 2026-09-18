@@ -1,4 +1,5 @@
 #include "PlanetScene.h"
+#include "Logging/Logger.h"
 
 PlanetScene::PlanetScene(ApplicationBase* app, float radius, unsigned int resolution) : 
 	Scene(app), radius(radius), resolution(resolution)
@@ -55,10 +56,14 @@ void PlanetScene::Update(float deltaTime)
 	UpdateSunPosition();
 
 	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(radius));
 
 	shaderPtr->Activate();
-	shaderPtr->setMatrix("model", model);
 	
+	shaderPtr->setMatrix("model", model);
+	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
+	shaderPtr->setMat3("normalMatrix", normalMatrix);
+
 	cameraPtr->SetPositionToShader("viewPos", *shaderPtr);
 
 	matPtr->SetShaderProgramParameters(*shaderPtr, "material");
@@ -86,6 +91,16 @@ void PlanetScene::OnImGuiRender()
 
 	ImGui::Checkbox("Show Mesh", &showMesh);
 
+	if (ImGui::Button("Randomize Seed"))
+	{
+		if (planetPtr != nullptr)
+		{
+			std::random_device rd;
+			int newSeed = static_cast<int>(rd());
+			planetPtr->SetSeedForNoise(newSeed);
+		}
+	}
+
 	int currentRes = static_cast<int>(resolution);
 	if (ImGui::SliderInt("Resolution", &currentRes, 2, 256))
 	{
@@ -98,8 +113,9 @@ void PlanetScene::OnImGuiRender()
 	if (ImGui::SliderFloat("Radius", &currentRadius, 1.0f, 10.0f)) 
 	{
 		radius = currentRadius;
-		if (planetPtr != nullptr)
-			planetPtr->SetRadius(radius);
+		LOG_INFO("Radius set to {}", radius);
+		//if (planetPtr != nullptr)
+			//planetPtr->SetRadius(radius);
 	}
 
 
