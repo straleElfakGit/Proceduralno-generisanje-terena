@@ -2,6 +2,7 @@
 #define SHAPE_GENERATOR_H
 
 #include "Noise/NoiseFilter.h"
+#include "Noise/NoiseSettings.h"
 #include "Settings/ShapeSettings.h"
 #include <glm/glm.hpp>
 

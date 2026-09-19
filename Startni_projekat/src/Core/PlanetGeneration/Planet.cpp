@@ -37,7 +37,7 @@ void Planet::SetResolution(unsigned int res)
 {
 	if (this->resolution != res) {
 		this->resolution = res;
-		ShapeGenerator generator(shapeSettings, this->noise);
+		ShapeGenerator generator(this->shapeSettings, this->noise);
 		for (int i = 0; i < 6; i++)
 			if (faces[i] != nullptr)
 				faces[i]->SetResolution(res, generator);
@@ -48,16 +48,18 @@ void Planet::SetRadius(float radius)
 {
 	if (shapeSettings.GetPlanetRadius()!= radius) {
 		shapeSettings.SetPlanetRadius(radius);
-		ShapeGenerator generator(shapeSettings, this->noise);
-		for (int i = 0; i < 6; i++)
-			if (faces[i] != nullptr)
-				faces[i]->UpdateMembers(generator);
+		RegeneratePlanet();
 	}
 }
 
 void Planet::SetSeedForNoise(int seed)
 {
 	noise.ChangeDitribution(seed);
+	RegeneratePlanet();
+}
+
+void Planet::RegeneratePlanet()
+{
 	ShapeGenerator generator(shapeSettings, this->noise);
 	for (int i = 0; i < 6; i++)
 		if (faces[i] != nullptr)

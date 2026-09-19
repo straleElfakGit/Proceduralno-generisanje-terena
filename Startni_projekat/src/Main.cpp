@@ -10,6 +10,7 @@ int main()
 {	
 	Logger::Init();
 
+	LOG_FUNC();
 	LOG_INFO("Startujem program");
 
 	ApplicationBase* app = new Application();

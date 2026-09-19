@@ -3,6 +3,7 @@
 
 #include "GLResource.h"
 #include<glad/glad.h>
+#include "Logging/Logger.h"
 
 template <typename T>
 class EBO : public GLResource
@@ -33,12 +34,14 @@ inline EBO<T>::EBO(std::vector<GLuint>& indices)
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+	LOG_FUNC();
 }
 
 template<typename T>
 inline EBO<T>::~EBO()
 {
 	Delete();
+	LOG_FUNC();
 }
 
 template <typename T>

@@ -204,6 +204,7 @@
     <ClInclude Include="src\Core\Noise\FractalNoise.h" />
     <ClInclude Include="src\Core\Noise\Noise.h" />
     <ClInclude Include="src\Core\Noise\NoiseFilter.h" />
+    <ClInclude Include="src\Core\Noise\NoiseSettings.h" />
     <ClInclude Include="src\Core\Noise\PerlinNoise.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Planet.h" />
     <ClInclude Include="src\Core\PlanetGeneration\PlanetVertex.h" />

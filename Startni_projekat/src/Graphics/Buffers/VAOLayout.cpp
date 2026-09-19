@@ -1,4 +1,5 @@
 #include "VAOLayout.h"
+#include "Logging/Logger.h"
 
 void VAOLayout::addBifferLayout(const VertexBufferLayout& layout)
 {
@@ -20,11 +21,13 @@ void VAOLayout::DeleteSpecific()
 VAOLayout::VAOLayout()
 {
 	glGenVertexArrays(1, &ID);
+	LOG_FUNC();
 }
 
 VAOLayout::~VAOLayout()
 {
 	Delete();
+	LOG_FUNC();
 }
 
 void VAOLayout::addBuffer(const VBO<GLfloat>& vbo, const VertexBufferLayout& layout)

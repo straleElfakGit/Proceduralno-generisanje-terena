@@ -42,7 +42,7 @@ namespace
 
 Noise::Noise()
 {
-    LOG_INFO("Kreiranje suma.");
+    LOG_FUNC();
 	Randomize(0);
 }
 

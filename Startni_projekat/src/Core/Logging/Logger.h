@@ -1,6 +1,14 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <memory>
+
+#ifdef _DEBUG
+    #ifndef SPDLOG_ACTIVE_LEVEL
+        #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+    #endif
+#endif
+
 #include <spdlog/spdlog.h>
 
 #ifdef _DEBUG
@@ -12,16 +20,15 @@
 
     #define ASSERT_LOGGER() Logger::GetAssertLogger()
 
-    #define FUNCTION() { \
-                    SPDLOG_LOGGER_TRACE(Logger::GetAssertLogger(), ""); \
-                }
+    #define LOG_FUNC() do { SPDLOG_LOGGER_TRACE(Logger::GetAssertLogger(), ""); } while(0)
+
 #else
     #define LOG_TRACE(...)
     #define LOG_INFO(...)
     #define LOG_WARN(...)
     #define LOG_ERR(...)
     #define LOG_CRIT(...)
-    #define FUNCTION()
+    #define LOG_FUNC()
 #endif
 
 class Logger

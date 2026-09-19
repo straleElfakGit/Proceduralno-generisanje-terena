@@ -2,7 +2,7 @@
 
 ShapeGenerator::ShapeGenerator(ShapeSettings& shapeSettings, Noise& noise):
     shapeSettings(shapeSettings),
-    noiseFilter(noise) { }
+    noiseFilter(noise, shapeSettings.GetNoiseSettings()) { }
 
 ShapeGenerator::~ShapeGenerator() { }
 

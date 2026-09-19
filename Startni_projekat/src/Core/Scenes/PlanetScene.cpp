@@ -85,11 +85,9 @@ void PlanetScene::Render()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void PlanetScene::OnImGuiRender()
+void PlanetScene::RenderNoiseGui(NoiseSettings& settings)
 {
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	ImGui::Checkbox("Show Mesh", &showMesh);
+	ImGui::SeparatorText("Noise settings");
 
 	if (ImGui::Button("Randomize Seed"))
 	{
@@ -101,6 +99,23 @@ void PlanetScene::OnImGuiRender()
 		}
 	}
 
+	bool changed = false;
+	changed |= ImGui::SliderInt("Number of octavs", &settings.numberOfOctaves, 1, 8);
+	changed |= ImGui::SliderFloat("Strength", &settings.strength, 0.0f, 2.0f);
+	changed |= ImGui::SliderFloat("Base roughness", &settings.baseRoughness, 0.1f, 4.0f);
+	changed |= ImGui::SliderFloat("Roughness", &settings.roughness, 1.0f, 4.0f);
+	changed |= ImGui::SliderFloat("Persistance", &settings.persistance, 0.0f, 1.0f);
+	changed |= ImGui::SliderFloat("Min value", &settings.minValue, 0.0f, 2.0f);
+	changed |= ImGui::DragFloat3("Center", glm::value_ptr(settings.center), 0.01f);
+
+	if (changed)
+		planetPtr->RegeneratePlanet();
+}
+
+void PlanetScene::RenderPlanetPropertiesGui()
+{
+	ImGui::Checkbox("Show Mesh", &showMesh);
+
 	int currentRes = static_cast<int>(resolution);
 	if (ImGui::SliderInt("Resolution", &currentRes, 2, 256))
 	{
@@ -110,22 +125,38 @@ void PlanetScene::OnImGuiRender()
 	}
 
 	float currentRadius = radius;
-	if (ImGui::SliderFloat("Radius", &currentRadius, 1.0f, 10.0f)) 
+	if (ImGui::SliderFloat("Radius", &currentRadius, 1.0f, 10.0f))
 	{
 		radius = currentRadius;
 		LOG_INFO("Radius set to {}", radius);
 		//if (planetPtr != nullptr)
 			//planetPtr->SetRadius(radius);
 	}
+}
 
+void PlanetScene::OnImGuiRender()
+{
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-	ImGui::SliderFloat("Sun Velocity", &sunVelocity, 0.0f, 3.0f);
-	ImGui::SliderFloat("Sun Height", &sunHeight, -10.0f, 10.0f);
-	ImGui::SliderFloat("Sun Distance", &sunDistance, 1.0f, 50.0f);
+	if (ImGui::CollapsingHeader("Planet Settings"))
+		RenderPlanetPropertiesGui();
 
-	if (ImGui::Button("Reset Time"))
+	if (ImGui::CollapsingHeader("Sun & Lighting")) 
 	{
-		timer.Reset();
+		ImGui::SliderFloat("Sun Velocity", &sunVelocity, 0.0f, 3.0f);
+		ImGui::SliderFloat("Sun Height", &sunHeight, -10.0f, 10.0f);
+		ImGui::SliderFloat("Sun Distance", &sunDistance, 1.0f, 50.0f);
+
+		if (ImGui::Button("Reset Time"))
+		{
+			timer.Reset();
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Noise Settings"))
+	{
+		if (planetPtr != nullptr)
+			RenderNoiseGui(planetPtr->GetNoiseSettings());
 	}
 
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);

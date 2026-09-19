@@ -2,10 +2,12 @@
 #define PLANET_H
 
 #include <memory>
+#include <glm/glm.hpp>
 #include "TerrainFace.h"
 #include "Settings/ShapeSettings.h"
 #include "ShapeGenerator.h"
 #include "Noise/Noise.h"
+#include "Noise/NoiseSettings.h"
 
 class Planet {
 private:
@@ -30,7 +32,11 @@ public:
 	float GetRadius() const { return shapeSettings.GetPlanetRadius(); }
 	void SetRadius(float radius);
 
+	NoiseSettings& GetNoiseSettings() { return shapeSettings.GetNoiseSettings(); }
+
 	void SetSeedForNoise(int seed);
+
+	void RegeneratePlanet();
 };
 
 #endif // !PLANET_H

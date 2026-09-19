@@ -41,9 +41,11 @@ private:
     virtual void OnScroll(double xoffset, double yoffset) override;
 
     void UpdateSunPosition();
+    void RenderNoiseGui(NoiseSettings& settings);
+    void RenderPlanetPropertiesGui();
 
 public:
-    PlanetScene(ApplicationBase* app, float radius = 1.0f, unsigned int resolution = 4);
+    PlanetScene(ApplicationBase* app, float radius = 1.0f, unsigned int resolution = 20);
 
     virtual void Start() override;
     virtual void Update(float dt) override;
