@@ -6,7 +6,7 @@ std::unique_ptr<Planet> Planet::CreateUniq(float radius, unsigned int resolution
 }
 
 Planet::Planet(float radius, unsigned int resolution) :
-	shapeSettings(radius, 1), resolution(resolution), noise()
+	shapeSettings(radius, 1), resolution(resolution), noise(), colorGenerator()
 {
 	for (int i = 0; i < 6; i++)
 		renderFace[i] = true;
@@ -33,6 +33,8 @@ void Planet::GeneratePlanet()
 	for (int i = 0; i < 6; i++) {
 		faces[i] = std::make_unique<TerrainFace>(this->resolution, directions[i], generator);
 	}
+
+	colorGenerator.UpdateElevation(generator.GetMinMax());
 }
 
 void Planet::SetResolution(unsigned int res)
@@ -43,6 +45,7 @@ void Planet::SetResolution(unsigned int res)
 		for (int i = 0; i < 6; i++)
 			if (faces[i] != nullptr)
 				faces[i]->SetResolution(res, generator);
+		colorGenerator.UpdateElevation(generator.GetMinMax());
 	}
 }
 
@@ -66,6 +69,7 @@ void Planet::RegeneratePlanet()
 	for (int i = 0; i < 6; i++)
 		if (faces[i] != nullptr && renderFace[i])
 			faces[i]->UpdateMembers(generator);
+	colorGenerator.UpdateElevation(generator.GetMinMax());
 }
 
 void Planet::Render() const {

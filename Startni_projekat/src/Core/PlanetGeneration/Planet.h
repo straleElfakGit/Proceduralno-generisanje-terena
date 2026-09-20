@@ -8,6 +8,7 @@
 #include "ShapeGenerator.h"
 #include "Noise/Noise.h"
 #include "Noise/NoiseSettings.h"
+#include "ColorGenerator.h"
 
 class Planet {
 private:
@@ -18,7 +19,10 @@ private:
 	std::unique_ptr<TerrainFace> faces[6];
 	bool renderFace[6];
 
+	ColorGenerator colorGenerator;
+
 	void GeneratePlanet();
+
 public:
 	static std::unique_ptr<Planet> CreateUniq(float radius, unsigned int resolution);
 
@@ -34,6 +38,8 @@ public:
 	void SetRadius(float radius);
 
 	bool& GetRenderFaceRef(int index) { return renderFace[index]; }
+
+	ColorGenerator& GetColorGeneratorRef() { return colorGenerator; }
 
 	NoiseSettings& GetNoiseSettings(int layerIndex) { return shapeSettings.GetNoiseSettings(layerIndex); }
 	int GetNumberOfNoiseLayers() const { return shapeSettings.GetNumberOfLayers(); }

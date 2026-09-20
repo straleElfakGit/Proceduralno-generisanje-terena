@@ -181,6 +181,29 @@ void PlanetScene::RenderFacesGui()
 	}
 }
 
+void PlanetScene::RenderColorGui()
+{
+	ColorGenerator& colorGenerator = planetPtr->GetColorGeneratorRef();
+	Gradient& g = colorGenerator.GetSettings().gradient;
+	bool changed = false;
+
+	for (size_t i = 0; i < g.keys.size(); i++)
+	{
+		ImGui::PushID(static_cast<int>(i));
+		changed |= ImGui::ColorEdit3("##color", glm::value_ptr(g.keys[i].color), ImGuiColorEditFlags_NoInputs);
+		ImGui::SameLine();
+		changed |= ImGui::SliderFloat("##pos", &g.keys[i].position, 0.0f, 1.0f);
+		ImGui::PopID();
+	}
+
+	if (ImGui::Button("Add key")) { g.keys.push_back({ 1.0f, glm::vec3(1.0f) }); changed = true; }
+	ImGui::SameLine();
+	if (ImGui::Button("Remove last") && g.keys.size() > 2) { g.keys.pop_back(); changed = true; }
+
+	if (changed)
+		colorGenerator.UpdateColors();
+}
+
 void PlanetScene::RenderPlanetPropertiesGui()
 {
 	ImGui::Checkbox("Show Mesh", &showMesh);
@@ -209,6 +232,22 @@ void PlanetScene::RenderPlanetPropertiesGui()
 	RenderFacesGui();
 }
 
+void PlanetScene::RenderSunGui()
+{
+	ImGui::SliderFloat("Sun Velocity", &sunVelocity, 0.0f, 3.0f);
+	ImGui::SliderFloat("Sun Height", &sunHeight, -10.0f, 10.0f);
+	ImGui::SliderFloat("Sun Distance", &sunDistance, 1.0f, 50.0f);
+
+	ImGui::Checkbox("Rotate planet (freezes sun)", &rotatePlanet);
+	ImGui::SliderFloat("Planet Velocity", &planetVelocity, 0.0f, 3.0f);
+
+	if (ImGui::Button("Reset Angles"))
+	{
+		sunAngle = 0.0f;
+		planetAngle = 0.0f;
+	}
+}
+
 void PlanetScene::OnImGuiRender()
 {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -216,21 +255,8 @@ void PlanetScene::OnImGuiRender()
 	if (ImGui::CollapsingHeader("Planet Settings"))
 		RenderPlanetPropertiesGui();
 
-	if (ImGui::CollapsingHeader("Sun & Lighting")) 
-	{
-		ImGui::SliderFloat("Sun Velocity", &sunVelocity, 0.0f, 3.0f);
-		ImGui::SliderFloat("Sun Height", &sunHeight, -10.0f, 10.0f);
-		ImGui::SliderFloat("Sun Distance", &sunDistance, 1.0f, 50.0f);
-
-		ImGui::Checkbox("Rotate planet (freezes sun)", &rotatePlanet);
-		ImGui::SliderFloat("Planet Velocity", &planetVelocity, 0.0f, 3.0f);
-
-		if (ImGui::Button("Reset Angles"))
-		{
-			sunAngle = 0.0f;
-			planetAngle = 0.0f;
-		}
-	}
+	if (ImGui::CollapsingHeader("Sun & Lighting"))
+		RenderSunGui();
 	
 	int numberOfLayers = planetPtr->GetNumberOfNoiseLayers();
 	for (int i = 0; i < numberOfLayers; i++) {
@@ -241,6 +267,9 @@ void PlanetScene::OnImGuiRender()
 				RenderNoiseGui(planetPtr->GetNoiseSettings(i), i);
 		}
 	}
+
+	if (ImGui::CollapsingHeader("Color Settings"))
+		RenderColorGui();
 
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 }

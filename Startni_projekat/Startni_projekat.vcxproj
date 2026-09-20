@@ -160,6 +160,7 @@
     <ClCompile Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.cpp" />
+    <ClCompile Include="src\Core\PlanetGeneration\ColorGenerator.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\Galaxy.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\Planet.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\ShapeGenerator.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Graphics\shaderClass.cpp" />
     <ClCompile Include="src\Graphics\stb.cpp" />
+    <ClCompile Include="src\Graphics\Textures\GradientTexture.cpp" />
     <ClCompile Include="src\Graphics\Textures\Texture.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Vendor\glad.c" />
@@ -215,7 +217,9 @@
     <ClInclude Include="src\Core\Noise\NoiseLayer.h" />
     <ClInclude Include="src\Core\Noise\NoiseSettings.h" />
     <ClInclude Include="src\Core\Noise\PerlinNoise.h" />
+    <ClInclude Include="src\Core\PlanetGeneration\ColorGenerator.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Galaxy.h" />
+    <ClInclude Include="src\Core\PlanetGeneration\MinMax.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Planet.h" />
     <ClInclude Include="src\Core\PlanetGeneration\PlanetVertex.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Settings\ColorSetting.h" />
@@ -255,6 +259,7 @@
     <ClInclude Include="src\Graphics\Materials\SpecularMap.h" />
     <ClInclude Include="src\Graphics\Mesh\Vertex.h" />
     <ClInclude Include="src\Graphics\shaderClass.h" />
+    <ClInclude Include="src\Graphics\Textures\GradientTexture.h" />
     <ClInclude Include="src\Graphics\Textures\Texture.h" />
     <ClInclude Include="src\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="src\Vendor\imgui\imconfig.h" />

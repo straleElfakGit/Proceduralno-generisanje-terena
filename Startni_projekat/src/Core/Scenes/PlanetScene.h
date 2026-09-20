@@ -49,6 +49,8 @@ private:
     void RenderNoiseGui(NoiseSettings& settings, int index);
     void RenderPlanetPropertiesGui();
     void RenderFacesGui();
+    void RenderColorGui();
+    void RenderSunGui();
 
 public:
     PlanetScene(ApplicationBase* app, float radius = 1.0f, unsigned int resolution = 20);
