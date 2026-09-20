@@ -6,7 +6,7 @@
 #include "Buffers/EBO.h"
 #include "Buffers/VAO.h"
 #include "Camera/Camera.h"
-#include "Texture.h"
+#include "Textures/Texture.h"
 #include "Vertex.h"
 #include "Materials/Material.h"
 

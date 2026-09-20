@@ -16,7 +16,15 @@ void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shade
 	shader.setMatrix(uniform, projection * view);
 }
 
+glm::mat4 Camera::GetViewMatrix() const
+{
+	return glm::lookAt(Position, Position + Orientation, Up);
+}
 
+glm::mat4 Camera::GetProjectionMatrix(float FOVdeg, float nearPlane, float farPlane, int width, int height) const
+{
+	return glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
+}
 
 void Camera::Inputs(GLFWwindow* window, float deltaTime, int width, int height)
 {

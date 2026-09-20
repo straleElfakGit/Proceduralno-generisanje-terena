@@ -2,7 +2,7 @@
 #define SPECULAR_MAP_CLASS_H
 
 #include "Material.h"
-#include "Texture.h"
+#include "Textures/Texture.h"
 
 class SpecularMap : public Material
 {

@@ -60,7 +60,7 @@
     <ClCompile Include="src\Graphics\stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Texture.cpp">
+    <ClCompile Include="src\Graphics\Textures\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vendor\glad.c">
@@ -150,6 +150,12 @@
     <ClCompile Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Textures\CubeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\PlanetGeneration\Galaxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Buffers\EBO.h">
@@ -200,7 +206,7 @@
     <ClInclude Include="src\Graphics\shaderClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Texture.h">
+    <ClInclude Include="src\Graphics\Textures\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Logging\ErrorHandler.h">
@@ -338,9 +344,17 @@
     <ClInclude Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Graphics\Textures\CubeMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\PlanetGeneration\Galaxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\Shaders\planetShader.vert" />
     <None Include="assets\Shaders\planetShader.frag" />
+    <None Include="assets\Shaders\skyBoxShader.vert" />
+    <None Include="assets\Shaders\skyBoxShader.frag" />
   </ItemGroup>
 </Project>

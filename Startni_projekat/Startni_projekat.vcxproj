@@ -160,6 +160,7 @@
     <ClCompile Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.cpp" />
+    <ClCompile Include="src\Core\PlanetGeneration\Galaxy.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\Planet.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\ShapeGenerator.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\TerrainFace.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="src\Graphics\Buffers\VertexBufferLayout.cpp" />
     <ClCompile Include="src\Core\Logging\ErrorHandler.cpp" />
     <ClCompile Include="src\Graphics\Camera\Camera.cpp" />
+    <ClCompile Include="src\Graphics\Textures\CubeMap.cpp" />
     <ClCompile Include="src\Graphics\Deleteable.cpp" />
     <ClCompile Include="src\Graphics\GLResource.cpp" />
     <ClCompile Include="src\Graphics\Lights\DirectionalLight.cpp" />
@@ -188,7 +190,7 @@
     <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Graphics\shaderClass.cpp" />
     <ClCompile Include="src\Graphics\stb.cpp" />
-    <ClCompile Include="src\Graphics\Texture.cpp" />
+    <ClCompile Include="src\Graphics\Textures\Texture.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Vendor\glad.c" />
     <ClCompile Include="src\Vendor\imgui\imgui.cpp" />
@@ -213,6 +215,7 @@
     <ClInclude Include="src\Core\Noise\NoiseLayer.h" />
     <ClInclude Include="src\Core\Noise\NoiseSettings.h" />
     <ClInclude Include="src\Core\Noise\PerlinNoise.h" />
+    <ClInclude Include="src\Core\PlanetGeneration\Galaxy.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Planet.h" />
     <ClInclude Include="src\Core\PlanetGeneration\PlanetVertex.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Settings\ColorSetting.h" />
@@ -238,6 +241,7 @@
     <ClInclude Include="src\Graphics\Buffers\VAO.h" />
     <ClInclude Include="src\Graphics\Buffers\VBO.h" />
     <ClInclude Include="src\Graphics\Camera\Camera.h" />
+    <ClInclude Include="src\Graphics\Textures\CubeMap.h" />
     <ClInclude Include="src\Graphics\Deleteable.h" />
     <ClInclude Include="src\Graphics\GLResource.h" />
     <ClInclude Include="src\Graphics\Lights\DirectionalLight.h" />
@@ -251,7 +255,7 @@
     <ClInclude Include="src\Graphics\Materials\SpecularMap.h" />
     <ClInclude Include="src\Graphics\Mesh\Vertex.h" />
     <ClInclude Include="src\Graphics\shaderClass.h" />
-    <ClInclude Include="src\Graphics\Texture.h" />
+    <ClInclude Include="src\Graphics\Textures\Texture.h" />
     <ClInclude Include="src\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="src\Vendor\imgui\imconfig.h" />
     <ClInclude Include="src\Vendor\imgui\imgui.h" />
@@ -266,6 +270,8 @@
   <ItemGroup>
     <None Include="assets\Shaders\planetShader.frag" />
     <None Include="assets\Shaders\planetShader.vert" />
+    <None Include="assets\Shaders\skyBoxShader.frag" />
+    <None Include="assets\Shaders\skyBoxShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -19,6 +19,9 @@ PlanetScene::PlanetScene(ApplicationBase* app, float radius, unsigned int resolu
 		glm::vec3(0.1f, 0.4f, 0.8f),
 		glm::vec3(0.3f, 0.3f, 0.5f),
 		16.0f);
+
+	galaxyShaderPtr = std::make_unique<Shader>("assets/Shaders/skyBoxShader.vert", "assets/Shaders/skyBoxShader.frag");
+	galaxyPtr = std::make_unique<Galaxy>(*galaxyShaderPtr);
 }
 
 void PlanetScene::Start()
@@ -31,16 +34,12 @@ void PlanetScene::Start()
 
 void PlanetScene::UpdateSunPosition()
 {
-	float time = timer.ElapsedSeconds();
-	float angle = time * sunVelocity;
 	glm::vec3 sunPosition = glm::vec3(
-		std::cos(angle) * sunDistance,
+		std::cos(sunAngle) * sunDistance,
 		sunHeight,
-		std::sin(angle) * sunDistance
-	);
+		std::sin(sunAngle) * sunDistance);
 
-	glm::vec3 sunDirection = glm::normalize(-sunPosition);
-	lightPtr->UpdateDirection(sunDirection);
+	lightPtr->UpdateDirection(glm::normalize(-sunPosition));
 }
 
 void PlanetScene::Update(float deltaTime)
@@ -52,10 +51,18 @@ void PlanetScene::Update(float deltaTime)
 	if (!io.WantCaptureMouse)
 		cameraPtr->Inputs(win, deltaTime, data->width, data->height);
 
+	if (rotatePlanet)
+		planetAngle += planetVelocity * deltaTime;
+	else
+		sunAngle += sunVelocity * deltaTime;
+
+	planetAngle = std::fmod(planetAngle, glm::two_pi<float>());
+	sunAngle = std::fmod(sunAngle, glm::two_pi<float>());
 
 	UpdateSunPosition();
 
 	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::rotate(model, planetAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(radius));
 
 	shaderPtr->Activate();
@@ -74,9 +81,14 @@ void PlanetScene::Render()
 {
 	GLCall(glClearColor(0.5f, 0.5f, 0.5f, 1.0f));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
 	GLFWwindow* win = app->GetGLFWWindow();
 	WindowData* data = (WindowData*)glfwGetWindowUserPointer(win);
+
+	glm::mat4 viewMat = cameraPtr->GetViewMatrix();
+	glm::mat4 projectionMat = cameraPtr->GetProjectionMatrix(fov, 0.1f, 1000.0f, data->width, data->height);
+	galaxyPtr->Render(viewMat, projectionMat);
+
+	shaderPtr->Activate();
 	cameraPtr->Matrix(fov, 0.1f, 1000.0f, *shaderPtr, "camMat", data->width, data->height);
 
 	if (showMesh)
@@ -210,9 +222,13 @@ void PlanetScene::OnImGuiRender()
 		ImGui::SliderFloat("Sun Height", &sunHeight, -10.0f, 10.0f);
 		ImGui::SliderFloat("Sun Distance", &sunDistance, 1.0f, 50.0f);
 
-		if (ImGui::Button("Reset Time"))
+		ImGui::Checkbox("Rotate planet (freezes sun)", &rotatePlanet);
+		ImGui::SliderFloat("Planet Velocity", &planetVelocity, 0.0f, 3.0f);
+
+		if (ImGui::Button("Reset Angles"))
 		{
-			timer.Reset();
+			sunAngle = 0.0f;
+			planetAngle = 0.0f;
 		}
 	}
 	

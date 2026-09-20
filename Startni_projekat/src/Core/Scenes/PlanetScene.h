@@ -11,8 +11,8 @@
 #include "Application/ApplicationBase.h"
 #include "Logging/ErrorHandler.h"
 #include "imgui/imgui.h"
-#include "Timer.h"
 #include "PlanetGeneration/Planet.h"
+#include "PlanetGeneration/Galaxy.h"
 #include "Lights/DirectionalLight.h"
 #include "Materials/BasicMaterial.h"
 
@@ -22,17 +22,22 @@ private:
     std::unique_ptr<Planet> planetPtr;
     std::unique_ptr<Shader> shaderPtr;
     std::unique_ptr<Camera> cameraPtr;
-
     std::unique_ptr<DirectionalLight> lightPtr;
     std::unique_ptr<BasicMaterial> matPtr;
+
+    std::unique_ptr<Shader> galaxyShaderPtr;
+    std::unique_ptr<Galaxy> galaxyPtr;
 
     float radius;
     unsigned int resolution;
 
-    Timer timer;
-    float sunVelocity = 0.1f;
+    float planetAngle = 0.0f;
+    float planetVelocity = 0.5f;
+    float sunAngle = 0.0f;
+    float sunVelocity = 1.5f;
     float sunHeight = 2.0f;
     float sunDistance = 10.0f;
+    bool rotatePlanet = false;
 
     bool showMesh = false;
 
