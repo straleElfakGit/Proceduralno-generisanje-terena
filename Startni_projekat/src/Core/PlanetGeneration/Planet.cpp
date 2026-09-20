@@ -6,8 +6,10 @@ std::unique_ptr<Planet> Planet::CreateUniq(float radius, unsigned int resolution
 }
 
 Planet::Planet(float radius, unsigned int resolution) :
-	shapeSettings(radius), resolution(resolution), noise()
+	shapeSettings(radius, 1), resolution(resolution), noise()
 {
+	for (int i = 0; i < 6; i++)
+		renderFace[i] = true;
 	GeneratePlanet();
 }
 
@@ -62,12 +64,12 @@ void Planet::RegeneratePlanet()
 {
 	ShapeGenerator generator(shapeSettings, this->noise);
 	for (int i = 0; i < 6; i++)
-		if (faces[i] != nullptr)
+		if (faces[i] != nullptr && renderFace[i])
 			faces[i]->UpdateMembers(generator);
 }
 
 void Planet::Render() const {
 	for (int i = 0; i < 6; i++)
-		if (faces[i] != nullptr)
+		if (faces[i] != nullptr && renderFace[i])
 			faces[i]->Render();
 }

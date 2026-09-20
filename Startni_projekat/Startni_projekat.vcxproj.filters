@@ -138,10 +138,16 @@
     <ClCompile Include="src\Core\PlanetGeneration\ShapeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Noise\NoiseFilter.cpp">
+    <ClCompile Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Noise\Noise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -311,10 +317,25 @@
     <ClInclude Include="src\Core\Noise\Noise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Noise\NoiseFilter.h">
+    <ClInclude Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Noise\NoiseSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\NoiseLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilterType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

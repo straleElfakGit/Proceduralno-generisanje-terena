@@ -85,9 +85,9 @@ void PlanetScene::Render()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void PlanetScene::RenderNoiseGui(NoiseSettings& settings)
+void PlanetScene::RenderNoiseGui(NoiseSettings& settings, int index)
 {
-	ImGui::SeparatorText("Noise settings");
+	ImGui::PushID(index);
 
 	if (ImGui::Button("Randomize Seed"))
 	{
@@ -98,8 +98,20 @@ void PlanetScene::RenderNoiseGui(NoiseSettings& settings)
 			planetPtr->SetSeedForNoise(newSeed);
 		}
 	}
-
+	
 	bool changed = false;
+
+	const char* filterTypeNames[] = { "Simple", "Rigid" };
+	int currentType = static_cast<int>(settings.filterType);
+
+	if (ImGui::Combo("Filter Type", &currentType, filterTypeNames, IM_ARRAYSIZE(filterTypeNames)))
+	{
+		settings.filterType = static_cast<FilterType>(currentType);
+		changed = true;
+	}
+
+	changed |= ImGui::Checkbox("Enable layer", &planetPtr->GetLayerEnabledReference(index));
+	changed |= ImGui::Checkbox("Use first layer as mask", &planetPtr->GetLayerUseFirstLayerAsMask(index));
 	changed |= ImGui::SliderInt("Number of octavs", &settings.numberOfOctaves, 1, 8);
 	changed |= ImGui::SliderFloat("Strength", &settings.strength, 0.0f, 2.0f);
 	changed |= ImGui::SliderFloat("Base roughness", &settings.baseRoughness, 0.1f, 4.0f);
@@ -107,9 +119,54 @@ void PlanetScene::RenderNoiseGui(NoiseSettings& settings)
 	changed |= ImGui::SliderFloat("Persistance", &settings.persistance, 0.0f, 1.0f);
 	changed |= ImGui::SliderFloat("Min value", &settings.minValue, 0.0f, 2.0f);
 	changed |= ImGui::DragFloat3("Center", glm::value_ptr(settings.center), 0.01f);
+	if (currentType == 1)
+		changed |= ImGui::SliderFloat("Weight multiplier", &settings.weightMultiplier, 0.0f, 2.0f);
 
 	if (changed)
 		planetPtr->RegeneratePlanet();
+
+	ImGui::PopID();
+}
+
+void PlanetScene::RenderFacesGui()
+{
+	if (planetPtr == nullptr) 
+		return;
+
+	if (ImGui::CollapsingHeader("Render Faces"))
+	{
+		const char* faceNames[6] = {
+			"Top (+Y)",
+			"Bottom (-Y)",
+			"Left (-X)",
+			"Right (+X)",
+			"Front (+Z)",
+			"Back (-Z)"
+		};
+
+		ImGui::PushID("RenderFacesGroup");
+
+		for (int i = 0; i < 6; i++)
+		{
+			ImGui::Checkbox(faceNames[i], &planetPtr->GetRenderFaceRef(i));
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Select All"))
+		{
+			for (int i = 0; i < 6; i++)
+				planetPtr->GetRenderFaceRef(i) = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Deselect All"))
+		{
+			for (int i = 0; i < 6; i++)
+				planetPtr->GetRenderFaceRef(i) = false;
+		}
+
+		ImGui::PopID();
+	}
 }
 
 void PlanetScene::RenderPlanetPropertiesGui()
@@ -132,6 +189,12 @@ void PlanetScene::RenderPlanetPropertiesGui()
 		//if (planetPtr != nullptr)
 			//planetPtr->SetRadius(radius);
 	}
+
+	if (ImGui::Button("Add new noise layer"))
+	{
+		planetPtr->AddNewNoiseLayer();
+	}
+	RenderFacesGui();
 }
 
 void PlanetScene::OnImGuiRender()
@@ -152,11 +215,15 @@ void PlanetScene::OnImGuiRender()
 			timer.Reset();
 		}
 	}
-
-	if (ImGui::CollapsingHeader("Noise Settings"))
-	{
-		if (planetPtr != nullptr)
-			RenderNoiseGui(planetPtr->GetNoiseSettings());
+	
+	int numberOfLayers = planetPtr->GetNumberOfNoiseLayers();
+	for (int i = 0; i < numberOfLayers; i++) {
+		std::string headerLabel = "Noise Settings " + std::to_string(i + 1);
+		if (ImGui::CollapsingHeader(headerLabel.c_str()))
+		{
+			if (planetPtr != nullptr)
+				RenderNoiseGui(planetPtr->GetNoiseSettings(i), i);
+		}
 	}
 
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);

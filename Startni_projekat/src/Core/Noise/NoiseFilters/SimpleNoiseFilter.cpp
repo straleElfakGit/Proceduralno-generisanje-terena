@@ -1,11 +1,11 @@
-#include "NoiseFilter.h"
+#include "SimpleNoiseFilter.h"
 #include <algorithm>
 
-NoiseFilter::NoiseFilter(Noise& noise, NoiseSettings& settings): noise(noise), noiseSettings(settings) { }
+SimpleNoiseFilter::SimpleNoiseFilter(Noise& noise, NoiseSettings& settings): NoiseFilter(noise, settings) { }
 
-NoiseFilter::~NoiseFilter() { }
+SimpleNoiseFilter::~SimpleNoiseFilter() { }
 
-float NoiseFilter::Evaluate(const glm::vec3& point)
+float SimpleNoiseFilter::Evaluate(const glm::vec3& point)
 {
     float noiseValue = 0.0f;
     float frequency = noiseSettings.baseRoughness;

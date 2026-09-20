@@ -56,14 +56,14 @@ VBO<T>::VBO(std::vector<PlanetVertex>& vertices)
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(PlanetVertex), vertices.data(), GL_STATIC_DRAW);
-	LOG_FUNC();
+	//LOG_FUNC();
 }
 
 template<typename T>
 inline VBO<T>::~VBO()
 {
 	Delete();
-	LOG_FUNC();
+	//LOG_FUNC();
 }
 
 template <typename T>

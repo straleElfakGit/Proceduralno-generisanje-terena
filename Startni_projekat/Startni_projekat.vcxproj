@@ -157,7 +157,9 @@
     <ClCompile Include="src\Core\Application\ApplicationBase.cpp" />
     <ClCompile Include="src\Core\Logging\Logger.cpp" />
     <ClCompile Include="src\Core\Noise\Noise.cpp" />
-    <ClCompile Include="src\Core\Noise\NoiseFilter.cpp" />
+    <ClCompile Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.cpp" />
+    <ClCompile Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.cpp" />
+    <ClCompile Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\Planet.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\ShapeGenerator.cpp" />
     <ClCompile Include="src\Core\PlanetGeneration\TerrainFace.cpp" />
@@ -203,7 +205,12 @@
     <ClInclude Include="src\Core\Logging\Logger.h" />
     <ClInclude Include="src\Core\Noise\FractalNoise.h" />
     <ClInclude Include="src\Core\Noise\Noise.h" />
-    <ClInclude Include="src\Core\Noise\NoiseFilter.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilter.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilterType.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.h" />
+    <ClInclude Include="src\Core\Noise\NoiseLayer.h" />
     <ClInclude Include="src\Core\Noise\NoiseSettings.h" />
     <ClInclude Include="src\Core\Noise\PerlinNoise.h" />
     <ClInclude Include="src\Core\PlanetGeneration\Planet.h" />

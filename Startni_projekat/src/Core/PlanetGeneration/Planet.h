@@ -16,6 +16,7 @@ private:
 
 	unsigned int resolution;
 	std::unique_ptr<TerrainFace> faces[6];
+	bool renderFace[6];
 
 	void GeneratePlanet();
 public:
@@ -32,7 +33,14 @@ public:
 	float GetRadius() const { return shapeSettings.GetPlanetRadius(); }
 	void SetRadius(float radius);
 
-	NoiseSettings& GetNoiseSettings() { return shapeSettings.GetNoiseSettings(); }
+	bool& GetRenderFaceRef(int index) { return renderFace[index]; }
+
+	NoiseSettings& GetNoiseSettings(int layerIndex) { return shapeSettings.GetNoiseSettings(layerIndex); }
+	int GetNumberOfNoiseLayers() const { return shapeSettings.GetNumberOfLayers(); }
+	void AddNewNoiseLayer() { shapeSettings.AddNewNoiseLayer(); }
+
+	bool& GetLayerEnabledReference(int index) { return shapeSettings.GetLayerEnabledRef(index); }
+	bool& GetLayerUseFirstLayerAsMask(int index) { return shapeSettings.GetLayerUseFirstLayerAsMaskRef(index); }
 
 	void SetSeedForNoise(int seed);
 

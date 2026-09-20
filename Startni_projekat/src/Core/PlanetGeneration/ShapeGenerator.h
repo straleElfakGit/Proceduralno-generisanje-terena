@@ -1,16 +1,19 @@
 #ifndef SHAPE_GENERATOR_H
 #define SHAPE_GENERATOR_H
 
-#include "Noise/NoiseFilter.h"
+#include "Noise/NoiseFilters/NoiseFilter.h"
 #include "Noise/NoiseSettings.h"
 #include "Settings/ShapeSettings.h"
+#include "Noise/NoiseFilters/NoiseFilterFactory.h"
 #include <glm/glm.hpp>
+#include <vector>
+#include <memory>
 
 class ShapeGenerator
 {
 private:
 	ShapeSettings& shapeSettings;
-	mutable NoiseFilter noiseFilter;
+	mutable std::vector<std::unique_ptr<NoiseFilter>> noiseFilters;
 
 public:
 	ShapeGenerator(ShapeSettings& shapeSettings, Noise& noise);

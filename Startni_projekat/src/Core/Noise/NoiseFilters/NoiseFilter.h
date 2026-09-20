@@ -1,21 +1,20 @@
 #ifndef NOISE_FILTER_H
 #define NOISE_FILTER_H
 
-#include <glm/glm.hpp>
 #include "Noise/Noise.h"
 #include "Noise/NoiseSettings.h"
 
 class NoiseFilter
 {
-private:
+protected:
 	Noise& noise;
 	NoiseSettings& noiseSettings;
 
 public:
-	NoiseFilter(Noise& noise, NoiseSettings& settings);
-	~NoiseFilter();
+	NoiseFilter(Noise& noise, NoiseSettings& settings) : noise(noise), noiseSettings(settings) {}
+	virtual ~NoiseFilter() {};
 
-	float Evaluate(const glm::vec3& point);
+	virtual float Evaluate(const glm::vec3& point) = 0;
 };
 
 #endif // !NOISE_FILTER_H

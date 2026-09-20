@@ -4,6 +4,7 @@
 #include<glm/glm.hpp>
 
 #include "Logging/Logger.h"
+#include "NoiseFilters/NoiseFilterType.h"
 
 struct NoiseSettings
 {
@@ -13,8 +14,11 @@ struct NoiseSettings
 	float persistance;
 	glm::vec3 center;
 	int numberOfOctaves;
-
 	float minValue;
+
+	FilterType filterType;
+
+	float weightMultiplier;
 
 	NoiseSettings(float strength = 1.0f, float roughness = 2.0f, const glm::vec3& center = glm::vec3(0.0f), 
 		int numberOfOcaves = 1, float baseRoughness = 1.0f, float persistance = 0.5f, float minValue = 1.0f) :
@@ -24,7 +28,9 @@ struct NoiseSettings
 		numberOfOctaves(numberOfOcaves),
 		baseRoughness(baseRoughness),
 		persistance(persistance),
-		minValue(minValue)
+		minValue(minValue),
+		filterType(FilterType::Simple),
+		weightMultiplier(1.0f)
 	{
 		LOG_FUNC();
 	}
