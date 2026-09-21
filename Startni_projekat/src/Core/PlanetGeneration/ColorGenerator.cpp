@@ -2,7 +2,7 @@
 
 namespace
 {
-	const int kTextureResolution = 50;
+	const int kTextureResolution = 100;
 	const GLuint kTextureSlot = 1;
 }
 
@@ -22,15 +22,31 @@ void ColorGenerator::UpdateElevation(const MinMax& minMax)
 	elevationMinMax = minMax;
 }
 
-void ColorGenerator::UpdateColors()
+void ColorGenerator::UpdateColorsFlat(const Gradient& sorted)
 {
-	const Gradient sorted = settings.gradient.Sorted();
+	std::vector<glm::vec3> colors(kTextureResolution);
+	for (int i = 0; i < kTextureResolution; i++)
+		colors[i] = sorted.EvaluateFlat(i / (kTextureResolution - 1.0f));
 
+	texture->SetColors(colors);
+}
+
+void ColorGenerator::UpdateColorsSmooth(const Gradient& sorted)
+{
 	std::vector<glm::vec3> colors(kTextureResolution);
 	for (int i = 0; i < kTextureResolution; i++)
 		colors[i] = sorted.Evaluate(i / (kTextureResolution - 1.0f));
 
 	texture->SetColors(colors);
+}
+
+void ColorGenerator::UpdateColors()
+{
+	const Gradient sorted = settings.gradient.Sorted();
+	if (settings.flat)
+		UpdateColorsFlat(sorted);
+	else
+		UpdateColorsSmooth(sorted);
 }
 
 void ColorGenerator::SetShaderProgramParameters(const Shader& shader) const

@@ -5,6 +5,7 @@ layout (location = 1) in vec3 aNormal;
 
 out vec3 normal;
 out vec3 fragPos;
+out vec3 objectPos;
 
 uniform mat4 model;
 uniform mat4 camMat;
@@ -17,4 +18,6 @@ void main()
 
 	normal = normalMatrix * aNormal;
 	fragPos = vec3(worldPos);
+
+	objectPos = aPos;
 }

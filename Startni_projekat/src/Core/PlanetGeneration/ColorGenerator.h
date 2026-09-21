@@ -17,6 +17,8 @@ private:
 	MinMax elevationMinMax;
 	std::unique_ptr<GradientTexture> texture;
 
+	void UpdateColorsFlat(const Gradient& sorted);
+	void UpdateColorsSmooth(const Gradient& sorted);
 public:
 	ColorGenerator();
 

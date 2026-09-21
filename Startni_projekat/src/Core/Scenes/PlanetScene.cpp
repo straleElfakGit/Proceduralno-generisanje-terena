@@ -75,6 +75,9 @@ void PlanetScene::Update(float deltaTime)
 
 	matPtr->SetShaderProgramParameters(*shaderPtr, "material");
 	lightPtr->SetShaderProgramParameters(*shaderPtr, "dirLight");
+
+	ColorGenerator& colorGenerator = planetPtr->GetColorGeneratorRef();
+	colorGenerator.SetShaderProgramParameters(*shaderPtr);
 }
 
 void PlanetScene::Render()
@@ -184,7 +187,8 @@ void PlanetScene::RenderFacesGui()
 void PlanetScene::RenderColorGui()
 {
 	ColorGenerator& colorGenerator = planetPtr->GetColorGeneratorRef();
-	Gradient& g = colorGenerator.GetSettings().gradient;
+	ColorSettings& colorSettings = colorGenerator.GetSettings();
+	Gradient& g = colorSettings.gradient;
 	bool changed = false;
 
 	for (size_t i = 0; i < g.keys.size(); i++)
@@ -199,6 +203,8 @@ void PlanetScene::RenderColorGui()
 	if (ImGui::Button("Add key")) { g.keys.push_back({ 1.0f, glm::vec3(1.0f) }); changed = true; }
 	ImGui::SameLine();
 	if (ImGui::Button("Remove last") && g.keys.size() > 2) { g.keys.pop_back(); changed = true; }
+
+	changed |= ImGui::Checkbox("Flat colors", &colorSettings.flat);
 
 	if (changed)
 		colorGenerator.UpdateColors();

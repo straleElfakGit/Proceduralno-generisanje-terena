@@ -19,7 +19,7 @@ glm::vec3 ShapeGenerator::CalculatePointOnPlanet(const glm::vec3& pointOnUnitSph
             elevation += firstLayerValue;
     }
 
-    for (int i = 0; i < noiseFilters.size(); i++) {
+    for (int i = 1; i < noiseFilters.size(); i++) {
         if (shapeSettings.GetEnabled(i))
         {
             float mask = (shapeSettings.GetUseFirstLayerAsMask(i)) ? firstLayerValue : 1.0f;

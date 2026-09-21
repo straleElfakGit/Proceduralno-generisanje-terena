@@ -45,22 +45,43 @@ struct Gradient
 
 		return keys.back().color;
 	}
+
+	glm::vec3 EvaluateFlat(float t) const
+	{
+		if (keys.empty())
+			return glm::vec3(0.0f);
+
+		if (t <= keys.front().position)
+			return keys.front().color;
+
+		for (size_t i = 1; i < keys.size(); i++)
+		{
+			if (t <= keys[i].position)
+				return keys[i].color;
+		}
+
+		return keys.back().color;
+	}
 };
 
 
 struct ColorSettings 
 {
 	Gradient gradient;
+	bool flat = false;
 
 	ColorSettings()
 	{
 		gradient.keys = {
-			{ 0.00f, glm::vec3(0.05f, 0.15f, 0.55f) }, 
-			{ 0.30f, glm::vec3(0.10f, 0.35f, 0.75f) }, 
-			{ 0.32f, glm::vec3(0.85f, 0.80f, 0.55f) }, 
-			{ 0.40f, glm::vec3(0.20f, 0.55f, 0.20f) }, 
-			{ 0.75f, glm::vec3(0.45f, 0.35f, 0.25f) }, 
-			{ 1.00f, glm::vec3(1.00f, 1.00f, 1.00f) }
+			{ 0.00f, glm::vec3(0.05098f, 0.14902f, 0.54902f) },
+			{ 0.049f, glm::vec3(0.85098f,  0.80000f,  0.54902f) },
+			{ 0.15f, glm::vec3(0.34510f,  0.92549f,  0.34510f) },
+			{ 0.206f, glm::vec3(0.20000f,  0.54902f,  0.20000f) },
+			{ 0.411f, glm::vec3(0.45098f,  0.34902f,  0.25098f) },
+			{ 0.487f, glm::vec3(0.18039f,  0.16471f,  0.14118f) },
+			{ 0.595f, glm::vec3(0.51373f,  0.50980f,  0.50980f) },
+			{ 0.85f, glm::vec3(0.82353f,  0.82353f,  0.82353f) },
+			{ 1.0f, glm::vec3(1.0f, 1.0f, 1.0f) },
 		};
 	}
 
