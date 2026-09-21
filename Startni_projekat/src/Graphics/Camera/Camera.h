@@ -23,6 +23,8 @@ private:
 	float speed = 20.0f;
 	float sensitivity = 100.0f;
 
+	void MouseInput(GLFWwindow* window, int width, int height);
+
 public:
 	Camera(const glm::vec3& position);
 
