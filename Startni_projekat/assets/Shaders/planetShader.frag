@@ -20,34 +20,54 @@ out vec4 FragColor;
 in vec3 normal;
 in vec3 fragPos;
 in vec3 objectPos;
+in float biomePercent;
+in float elevation;
 
 uniform Material material;
 uniform DirLight dirLight;
 uniform vec3 viewPos;
 
 uniform vec2 elevationMinMax;
-uniform sampler1D colorGradient;
+uniform sampler2D colorGradient;
 
 vec3 GetBaseColor();
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 baseColor); 
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 baseColor, float shininessFactor); 
+float invLerp(float a, float b, float v) ;
+float GetPositiveElevationPercent(float elev, float maxElev);
+float GetNegativeElevationPercent(float elev, float minElev);
 
 void main()
 {
     vec3 norm = normalize(normal);
     vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 baseColor = GetBaseColor();
-    vec3 result = CalcDirLight(dirLight, norm, viewDir, baseColor);
+
+    float maxValue = GetPositiveElevationPercent(elevation, elevationMinMax.y);
+    float maxFactor = mix(0.5, 1.0, maxValue);
+    float minValue = GetNegativeElevationPercent(elevation, elevationMinMax.x);
+    float minFactor = mix(0.0, 0.5, minValue);
+    float floorMinValue = floor(minValue);
+    float res = (floorMinValue * maxFactor) + (1.0 - floorMinValue) * minFactor; 
+
+    vec3 baseColor = texture(colorGradient, vec2(res, biomePercent)).rgb;
+    float shininessFactor = 1.0 + (1.0 - floorMinValue) * 7.0;
+
+    vec3 result = CalcDirLight(dirLight, norm, viewDir, baseColor, shininessFactor);
     FragColor = vec4(result, 1.0f);
 }
 
 vec3 GetBaseColor()
 {
-    float range = max(elevationMinMax.y - elevationMinMax.x, 1e-6);
-    float t = clamp((length(objectPos) - elevationMinMax.x) / range, 0.0, 1.0);
-    return texture(colorGradient, t).rgb;
+    float maxValue = GetPositiveElevationPercent(elevation, elevationMinMax.y);
+    float maxFactor = mix(0.5, 1.0, maxValue);
+    float minValue = GetNegativeElevationPercent(elevation, elevationMinMax.x);
+    float minFactor = mix(0.0, 0.5, minValue);
+    float floorMinValue = floor(minValue);
+
+    float res = (floorMinValue * maxFactor) + (1.0 - floorMinValue) * minFactor; 
+    return texture(colorGradient, vec2(res, biomePercent)).rgb;
 }
 
-vec3 CalcDirLight(DirLight light, vec3 norm, vec3 viewDir, vec3 baseColor)
+vec3 CalcDirLight(DirLight light, vec3 norm, vec3 viewDir, vec3 baseColor, float shininessFactor)
 {
     vec3 lightDir = normalize(-light.direction);
     
@@ -56,7 +76,7 @@ vec3 CalcDirLight(DirLight light, vec3 norm, vec3 viewDir, vec3 baseColor)
     
     // specular shading
     vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess * shininessFactor);
     
     // combine results
     vec3 ambient  = light.ambient  * baseColor;
@@ -65,3 +85,18 @@ vec3 CalcDirLight(DirLight light, vec3 norm, vec3 viewDir, vec3 baseColor)
     
     return (ambient + diffuse + specular);
 } 
+
+float invLerp(float a, float b, float v) 
+{
+    return clamp((v - a) / (b - a), 0.0, 1.0);
+}
+
+float GetPositiveElevationPercent(float elev, float maxElev) 
+{
+    return invLerp(0.0, maxElev, elev);
+}
+
+float GetNegativeElevationPercent(float elev, float minElev) 
+{
+    return invLerp(minElev, 0.0, elev); 
+}

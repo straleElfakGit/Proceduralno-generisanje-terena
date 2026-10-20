@@ -12,7 +12,6 @@ class GradientTexture : public GLResource
 {
 private:
 	GLuint unit;
-	int resolution;
 
 protected:
 	virtual void DeleteSpecific() override;
@@ -21,7 +20,7 @@ public:
 	GradientTexture(int resolution, GLuint slot);
 	~GradientTexture();
 
-	void SetColors(const std::vector<glm::vec3>& cloros);
+	void SetColors(int width, int height, const std::vector<glm::vec3>& colors);
 
 	virtual void Bind() const override;
 	virtual void Unbind() const override;

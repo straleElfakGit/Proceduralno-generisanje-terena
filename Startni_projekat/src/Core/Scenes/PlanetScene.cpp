@@ -17,7 +17,7 @@ PlanetScene::PlanetScene(ApplicationBase* app, float radius, unsigned int resolu
 	matPtr = std::make_unique<BasicMaterial>(
 		glm::vec3(0.0f, 0.1f, 0.3f),
 		glm::vec3(0.1f, 0.4f, 0.8f),
-		glm::vec3(0.3f, 0.3f, 0.5f),
+		glm::vec3(1.0f),
 		16.0f);
 
 	galaxyShaderPtr = std::make_unique<Shader>("assets/Shaders/skyBoxShader.vert", "assets/Shaders/skyBoxShader.frag");
@@ -116,7 +116,7 @@ void PlanetScene::RenderNoiseGui(NoiseSettings& settings, int index)
 	
 	bool changed = false;
 
-	const char* filterTypeNames[] = { "Simple", "Rigid" };
+	const char* filterTypeNames[] = { "Simple", "Rigid", "Crater"};
 	int currentType = static_cast<int>(settings.filterType);
 
 	if (ImGui::Combo("Filter Type", &currentType, filterTypeNames, IM_ARRAYSIZE(filterTypeNames)))
@@ -127,15 +127,32 @@ void PlanetScene::RenderNoiseGui(NoiseSettings& settings, int index)
 
 	changed |= ImGui::Checkbox("Enable layer", &planetPtr->GetLayerEnabledReference(index));
 	changed |= ImGui::Checkbox("Use first layer as mask", &planetPtr->GetLayerUseFirstLayerAsMask(index));
-	changed |= ImGui::SliderInt("Number of octavs", &settings.numberOfOctaves, 1, 8);
-	changed |= ImGui::SliderFloat("Strength", &settings.strength, 0.0f, 2.0f);
-	changed |= ImGui::SliderFloat("Base roughness", &settings.baseRoughness, 0.1f, 4.0f);
-	changed |= ImGui::SliderFloat("Roughness", &settings.roughness, 1.0f, 4.0f);
-	changed |= ImGui::SliderFloat("Persistance", &settings.persistance, 0.0f, 1.0f);
-	changed |= ImGui::SliderFloat("Min value", &settings.minValue, 0.0f, 2.0f);
-	changed |= ImGui::DragFloat3("Center", glm::value_ptr(settings.center), 0.01f);
-	if (currentType == 1)
-		changed |= ImGui::SliderFloat("Weight multiplier", &settings.weightMultiplier, 0.0f, 2.0f);
+	if (currentType == static_cast<int>(FilterType::Crater))
+	{
+		CraterSettings& c = settings.craters;
+		changed |= ImGui::InputInt("Crater seed", &c.seed);
+		changed |= ImGui::SliderInt("Number of craters", &c.numberOfCraters, 0, 500);
+		changed |= ImGui::SliderFloat("Min radius", &c.minRadius, 0.005f, 0.5f);
+		changed |= ImGui::SliderFloat("Max radius", &c.maxRadius, 0.005f, 0.5f);
+		changed |= ImGui::SliderFloat("Size skew", &c.sizeSkew, 1.0f, 8.0f);
+		changed |= ImGui::SliderFloat("Floor height", &c.floorHeight, -1.0f, 0.0f);
+		changed |= ImGui::SliderFloat("Rim width", &c.rimWidth, 0.0f, 2.0f);
+		changed |= ImGui::SliderFloat("Rim steepness", &c.rimSteepness, 0.0f, 1.0f);
+		changed |= ImGui::SliderFloat("Smoothness", &c.smoothness, 0.01f, 1.0f);
+		changed |= ImGui::SliderFloat("Strength", &settings.strength, 0.0f, 2.0f);
+	}
+	else 
+	{
+		changed |= ImGui::SliderInt("Number of octavs", &settings.numberOfOctaves, 1, 8);
+		changed |= ImGui::SliderFloat("Strength", &settings.strength, 0.0f, 2.0f);
+		changed |= ImGui::SliderFloat("Base roughness", &settings.baseRoughness, 0.1f, 4.0f);
+		changed |= ImGui::SliderFloat("Roughness", &settings.roughness, 1.0f, 4.0f);
+		changed |= ImGui::SliderFloat("Persistance", &settings.persistance, 0.0f, 1.0f);
+		changed |= ImGui::SliderFloat("Min value", &settings.minValue, 0.0f, 2.0f);
+		changed |= ImGui::DragFloat3("Center", glm::value_ptr(settings.center), 0.01f);
+		if (currentType == 1)
+			changed |= ImGui::SliderFloat("Weight multiplier", &settings.weightMultiplier, 0.0f, 2.0f);
+	}
 
 	if (changed)
 		planetPtr->RegeneratePlanet();
@@ -187,26 +204,69 @@ void PlanetScene::RenderFacesGui()
 void PlanetScene::RenderColorGui()
 {
 	ColorGenerator& colorGenerator = planetPtr->GetColorGeneratorRef();
-	ColorSettings& colorSettings = colorGenerator.GetSettings();
-	Gradient& g = colorSettings.gradient;
-	bool changed = false;
+	BiomeColorSettings& biomeSettings = colorGenerator.GetSettings().biomeSettings;
 
-	for (size_t i = 0; i < g.keys.size(); i++)
+	bool colorChanged = false;
+	bool structuralChanged = false;
+
+	const char* filterTypeNames[] = { "Simple", "Rigid", "Crater" };
+	int currentType = static_cast<int>(biomeSettings.noise.filterType);
+	if (ImGui::Combo("Biome noise type", &currentType, filterTypeNames, IM_ARRAYSIZE(filterTypeNames)))
 	{
+		biomeSettings.noise.filterType = static_cast<FilterType>(currentType);
+		structuralChanged = true;
+	}
+	structuralChanged |= ImGui::SliderFloat("Noise Offset", &biomeSettings.noiseOffset, -1.0f, 1.0f);
+	structuralChanged |= ImGui::SliderFloat("Noise Strength", &biomeSettings.noiseStrength, 0.0f, 1.0f);
+	structuralChanged |= ImGui::SliderFloat("Blend Amount", &biomeSettings.blendAmount, 0.0f, 1.0f);
+
+	ImGui::Separator();
+
+	for (size_t i = 0; i < biomeSettings.biomes.size(); i++)
+	{
+		Biome& biome = biomeSettings.biomes[i];
 		ImGui::PushID(static_cast<int>(i));
-		changed |= ImGui::ColorEdit3("##color", glm::value_ptr(g.keys[i].color), ImGuiColorEditFlags_NoInputs);
-		ImGui::SameLine();
-		changed |= ImGui::SliderFloat("##pos", &g.keys[i].position, 0.0f, 1.0f);
+
+		std::string header = "Biome " + std::to_string(i + 1);
+		if (ImGui::CollapsingHeader(header.c_str()))
+		{
+			structuralChanged |= ImGui::SliderFloat("Start Height", &biome.startHeight, 0.0f, 1.0f);
+			colorChanged |= ImGui::ColorEdit3("Tint", glm::value_ptr(biome.tint));
+			colorChanged |= ImGui::SliderFloat("Tint Amount", &biome.tintPercent, 0.0f, 1.0f);
+
+			for (size_t k = 0; k < biome.gradient.keys.size(); k++)
+			{
+				ImGui::PushID(static_cast<int>(k));
+				colorChanged |= ImGui::ColorEdit3("##color", glm::value_ptr(biome.gradient.keys[k].color), ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+				colorChanged |= ImGui::SliderFloat("##pos", &biome.gradient.keys[k].position, 0.0f, 1.0f);
+				ImGui::PopID();
+			}
+			if (ImGui::Button("Add key")) { biome.gradient.keys.push_back({ 1.0f, glm::vec3(1.0f) }); colorChanged = true; }
+			ImGui::SameLine();
+			if (ImGui::Button("Remove key") && biome.gradient.keys.size() > 2) { biome.gradient.keys.pop_back(); colorChanged = true; }
+		}
 		ImGui::PopID();
 	}
 
-	if (ImGui::Button("Add key")) { g.keys.push_back({ 1.0f, glm::vec3(1.0f) }); changed = true; }
+	if (ImGui::Button("Add biome"))
+	{
+		Biome newBiome;
+		newBiome.gradient.keys = { { 0.0f, glm::vec3(0.5f) }, { 1.0f, glm::vec3(1.0f) } };
+		newBiome.startHeight = 1.0f;
+		biomeSettings.biomes.push_back(newBiome);
+		structuralChanged = true;
+	}
 	ImGui::SameLine();
-	if (ImGui::Button("Remove last") && g.keys.size() > 2) { g.keys.pop_back(); changed = true; }
+	if (ImGui::Button("Remove biome") && biomeSettings.biomes.size() > 1)
+	{
+		biomeSettings.biomes.pop_back();
+		structuralChanged = true;
+	}
 
-	changed |= ImGui::Checkbox("Flat colors", &colorSettings.flat);
-
-	if (changed)
+	if (structuralChanged)
+		planetPtr->RegeneratePlanet();
+	else if (colorChanged)
 		colorGenerator.UpdateColors();
 }
 

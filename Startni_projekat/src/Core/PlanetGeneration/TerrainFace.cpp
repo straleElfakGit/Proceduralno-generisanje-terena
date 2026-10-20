@@ -3,19 +3,21 @@
 #define TRIANGLES_PER_QUAD 2
 #define INDICES_PER_TRIANGLE 3
 
-std::unique_ptr<TerrainFace> TerrainFace::CreateUniq(int resolution, const glm::vec3& localUp, const ShapeGenerator& generator)
+std::unique_ptr<TerrainFace> TerrainFace::CreateUniq(int resolution, const glm::vec3& localUp, 
+	const ShapeGenerator& generator, const ColorGenerator& colorGenerator)
 {
-	return std::make_unique<TerrainFace>(resolution, localUp, generator);
+	return std::make_unique<TerrainFace>(resolution, localUp, generator, colorGenerator);
 }
 
-TerrainFace::TerrainFace(int resolution, const glm::vec3& localUp, const ShapeGenerator& generator) :
+TerrainFace::TerrainFace(int resolution, const glm::vec3& localUp, 
+	const ShapeGenerator& generator, const ColorGenerator& colorGenerator) :
 	resolution(resolution), 
 	localUp(localUp)
 {
 	axisA = glm::vec3(localUp.y, localUp.z, localUp.x);
 	axisB = glm::cross(axisA, localUp);
 
-	UpdateMembers(generator);
+	UpdateMembers(generator, colorGenerator);
 }
 
 TerrainFace::~TerrainFace() { }
@@ -24,7 +26,9 @@ void TerrainFace::ResizeVectors()
 {
 	unsigned int vertexCount = GetVertexCount();
 	positions.resize(vertexCount);
-	
+	biomePercents.resize(vertexCount);
+	unscaledElevation.resize(vertexCount);
+
 	normals.clear();
 	normals.resize(vertexCount, glm::vec3(0.0f));
 	
@@ -53,10 +57,11 @@ void TerrainFace::GeneratePoint(const glm::vec2& percent, int i, const ShapeGene
 	pointOnSphere.y = p.y * sqrt(1.0f - (x2 / 2.0f) - (z2 / 2.0f) + (x2 * z2 / 3.0f));
 	pointOnSphere.z = p.z * sqrt(1.0f - (x2 / 2.0f) - (y2 / 2.0f) + (x2 * y2 / 3.0f));
 
-	positions[i] = generator.CalculatePointOnPlanet(pointOnSphere);
+	float unscaledEvaluation = generator.CalculateUnscaledElevation(pointOnSphere);
+	positions[i] = pointOnSphere * generator.CalculateScaledElevation(unscaledEvaluation);
 }
 
-void TerrainFace::ConstructFace(const ShapeGenerator& generator)
+void TerrainFace::ConstructFace(const ShapeGenerator& generator, const ColorGenerator& colorGenerator)
 {
 	ResizeVectors();
 	unsigned int maxCoord = resolution - 1;
@@ -72,7 +77,11 @@ void TerrainFace::ConstructFace(const ShapeGenerator& generator)
 
 			glm::vec3 pointOnFace = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
 			glm::vec3 pointOnSphere = glm::normalize(pointOnFace);
-			positions[i] = generator.CalculatePointOnPlanet(pointOnSphere);
+			float unscaledEvaluation = generator.CalculateUnscaledElevation(pointOnSphere);
+			positions[i] = pointOnSphere * generator.CalculateScaledElevation(unscaledEvaluation);
+
+			biomePercents[i] = colorGenerator.BiomePercentFromPoint(pointOnSphere);
+			unscaledElevation[i] = unscaledEvaluation;
 
 			if (x != maxCoord && y != maxCoord) {
 				indices[triangleIndex++] = i;
@@ -123,9 +132,9 @@ void TerrainFace::CalculateNormals()
 	}
 }
 
-void TerrainFace::UpdateMembers(const ShapeGenerator& generator)
+void TerrainFace::UpdateMembers(const ShapeGenerator& generator, const ColorGenerator& colorGenerator)
 {
-	ConstructFace(generator);
+	ConstructFace(generator, colorGenerator);
 	UpdateVAO();
 }
 
@@ -137,6 +146,8 @@ void TerrainFace::UpdateVAO()
 	for (unsigned int i = 0; i < vertexCount; i++) {
 		vertices[i].position = positions[i];
 		vertices[i].normal = normals[i];
+		vertices[i].biomePercent = biomePercents[i];
+		vertices[i].unscaledElevation = unscaledElevation[i];
 	}
 
 	VAO = std::make_unique<VAOLayout>();
@@ -147,6 +158,8 @@ void TerrainFace::UpdateVAO()
 	VertexBufferLayout vbl;
 	vbl.Push<float>(3);
 	vbl.Push<float>(3);
+	vbl.Push<float>(1);
+	vbl.Push<float>(1);
 
 	VAO->addBuffer(*VBOPtr, vbl);
 
@@ -161,10 +174,11 @@ void TerrainFace::Render() const
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void TerrainFace::SetResolution(unsigned int res, const ShapeGenerator& generator)
+void TerrainFace::SetResolution(unsigned int res, 
+	const ShapeGenerator& generator, const ColorGenerator& colorGenerator)
 {
 	if (this->resolution != res) {
 		this->resolution = res;
-		UpdateMembers(generator);
+		UpdateMembers(generator, colorGenerator);
 	}
 }

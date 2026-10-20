@@ -29,12 +29,16 @@ void Planet::GeneratePlanet()
 	};
 
 	ShapeGenerator generator(this->shapeSettings, this->noise);
+	colorGenerator.UpdateBiomeNoiseFilter();
 
 	for (int i = 0; i < 6; i++) {
-		faces[i] = std::make_unique<TerrainFace>(this->resolution, directions[i], generator);
+		faces[i] = std::make_unique<TerrainFace>(this->resolution, directions[i], generator, colorGenerator);
 	}
 
+	const MinMax& minmax = generator.GetMinMax();
+	LOG_INFO("Min elevation = {}, Max elevation = {}", minmax.Min(), minmax.Max());
 	colorGenerator.UpdateElevation(generator.GetMinMax());
+	colorGenerator.UpdateColors();
 }
 
 void Planet::SetResolution(unsigned int res)
@@ -44,7 +48,9 @@ void Planet::SetResolution(unsigned int res)
 		ShapeGenerator generator(this->shapeSettings, this->noise);
 		for (int i = 0; i < 6; i++)
 			if (faces[i] != nullptr)
-				faces[i]->SetResolution(res, generator);
+				faces[i]->SetResolution(res, generator, colorGenerator);
+		const MinMax& minmax = generator.GetMinMax();
+		LOG_INFO("Min elevation = {}, Max elevation = {}", minmax.Min(), minmax.Max());
 		colorGenerator.UpdateElevation(generator.GetMinMax());
 	}
 }
@@ -66,10 +72,16 @@ void Planet::SetSeedForNoise(int seed)
 void Planet::RegeneratePlanet()
 {
 	ShapeGenerator generator(shapeSettings, this->noise);
+	colorGenerator.UpdateBiomeNoiseFilter();
+
 	for (int i = 0; i < 6; i++)
 		if (faces[i] != nullptr && renderFace[i])
-			faces[i]->UpdateMembers(generator);
+			faces[i]->UpdateMembers(generator,colorGenerator);
+
+	const MinMax& minmax = generator.GetMinMax();
+	LOG_INFO("Min elevation = {}, Max elevation = {}", minmax.Min(), minmax.Max());
 	colorGenerator.UpdateElevation(generator.GetMinMax());
+	colorGenerator.UpdateColors();
 }
 
 void Planet::Render() const {

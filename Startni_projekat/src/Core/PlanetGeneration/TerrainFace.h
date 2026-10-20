@@ -9,6 +9,7 @@
 #include "Buffers/EBO.h"
 #include "PlanetVertex.h"
 #include "ShapeGenerator.h"
+#include "ColorGenerator.h"
 
 class TerrainFace {
 private:
@@ -19,6 +20,8 @@ private:
 
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;
+	std::vector<float> biomePercents;
+	std::vector<float> unscaledElevation;
 	std::vector<unsigned int> indices;
 
 	std::unique_ptr<VAOLayout> VAO;
@@ -28,26 +31,28 @@ private:
 	void ResizeVectors();
 	void CalculateNormals();
 
-	void ConstructFace(const ShapeGenerator& generator);
+	void ConstructFace(const ShapeGenerator& generator, const ColorGenerator& colorGenerator);
 	void UpdateVAO();
 
 	void GeneratePoint(const glm::vec2& percent, int i, const ShapeGenerator& generator);
-
 public:
-	static std::unique_ptr<TerrainFace> CreateUniq(int resolution, const glm::vec3&, const ShapeGenerator& generator);
+	static std::unique_ptr<TerrainFace> CreateUniq(int resolution, const glm::vec3& localUp,
+		const ShapeGenerator& generator, const ColorGenerator& colorGenerator);
 
-	TerrainFace(int resolution, const glm::vec3& localUp, const ShapeGenerator& generator);
+	TerrainFace(int resolution, const glm::vec3& localUp,
+		const ShapeGenerator& generator, const ColorGenerator& colorGenerator);
 	~TerrainFace();
 
+
 	void Render() const;
-	void UpdateMembers(const ShapeGenerator& generator);
+	void UpdateMembers(const ShapeGenerator& generator, const ColorGenerator& colorGenerator);
 
 	unsigned int GetVertexCount() const { return resolution * resolution; }
 	unsigned int GetIndexCount() const { return indices.size(); }
 	unsigned int GetTriangleCount() const { return indices.size() / 3; }
 
 	unsigned int GetResolution() const { return resolution; }
-	void SetResolution(unsigned int res, const ShapeGenerator& generator);
+	void SetResolution(unsigned int res, const ShapeGenerator& generator, const ColorGenerator& colorGenerator);
 };
 
 #endif // !TERRAIN_FACE_H

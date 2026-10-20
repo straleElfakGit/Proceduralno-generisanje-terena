@@ -9,6 +9,9 @@
 #include "MinMax.h"
 #include "Textures/GradientTexture.h"
 #include "shaderClass.h"
+#include "Noise/Noise.h"
+#include "Noise/NoiseFilters/NoiseFilter.h"
+#include "Noise/NoiseFilters/NoiseFilterFactory.h"
 
 class ColorGenerator
 {
@@ -17,15 +20,18 @@ private:
 	MinMax elevationMinMax;
 	std::unique_ptr<GradientTexture> texture;
 
-	void UpdateColorsFlat(const Gradient& sorted);
-	void UpdateColorsSmooth(const Gradient& sorted);
+	Noise biomeNoise;
+	mutable std::unique_ptr<NoiseFilter> biomeNoiseFilter;
+
 public:
 	ColorGenerator();
 
 	ColorSettings& GetSettings();
 
 	void UpdateElevation(const MinMax& minMax);
+	void UpdateBiomeNoiseFilter();
 	void UpdateColors();
+	float BiomePercentFromPoint(const glm::vec3& pointOnUnitSphere) const;
 	void SetShaderProgramParameters(const Shader& shader) const;
 };
 

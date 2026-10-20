@@ -157,6 +157,7 @@
     <ClCompile Include="src\Core\Application\ApplicationBase.cpp" />
     <ClCompile Include="src\Core\Logging\Logger.cpp" />
     <ClCompile Include="src\Core\Noise\Noise.cpp" />
+    <ClCompile Include="src\Core\Noise\NoiseFilters\CraterNoiseFilter.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\RigidNoiseFilter.cpp" />
     <ClCompile Include="src\Core\Noise\NoiseFilters\SimpleNoiseFilter.cpp" />
@@ -207,8 +208,10 @@
     <ClInclude Include="src\Core\Application\Application.h" />
     <ClInclude Include="src\Core\Application\ApplicationBase.h" />
     <ClInclude Include="src\Core\Logging\Logger.h" />
+    <ClInclude Include="src\Core\Noise\CraterSettings.h" />
     <ClInclude Include="src\Core\Noise\FractalNoise.h" />
     <ClInclude Include="src\Core\Noise\Noise.h" />
+    <ClInclude Include="src\Core\Noise\NoiseFilters\CraterNoiseFilter.h" />
     <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilter.h" />
     <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilterFactory.h" />
     <ClInclude Include="src\Core\Noise\NoiseFilters\NoiseFilterType.h" />

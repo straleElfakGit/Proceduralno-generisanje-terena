@@ -23,7 +23,8 @@ public:
 	ShapeGenerator(ShapeSettings& shapeSettings, Noise& noise);
 	~ShapeGenerator();
 
-	glm::vec3 CalculatePointOnPlanet(const glm::vec3& pointOnUnitSphere) const;
+	float CalculateUnscaledElevation(const glm::vec3& pointOnUnitSphere) const;
+	float CalculateScaledElevation(float unscaledElevation) const;
 	const MinMax& GetMinMax() const { return elevationMinMax; }
 };
 

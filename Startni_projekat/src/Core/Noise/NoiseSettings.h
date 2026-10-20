@@ -5,9 +5,12 @@
 
 #include "Logging/Logger.h"
 #include "NoiseFilters/NoiseFilterType.h"
+#include "CraterSettings.h"
 
 struct NoiseSettings
 {
+	FilterType filterType;
+	
 	float strength;
 	float roughness;
 	float baseRoughness;
@@ -16,9 +19,9 @@ struct NoiseSettings
 	int numberOfOctaves;
 	float minValue;
 
-	FilterType filterType;
-
 	float weightMultiplier;
+
+	CraterSettings craters;
 
 	NoiseSettings(float strength = 1.0f, float roughness = 2.0f, const glm::vec3& center = glm::vec3(0.0f), 
 		int numberOfOcaves = 1, float baseRoughness = 1.0f, float persistance = 0.5f, float minValue = 1.0f) :
@@ -30,7 +33,8 @@ struct NoiseSettings
 		persistance(persistance),
 		minValue(minValue),
 		filterType(FilterType::Simple),
-		weightMultiplier(1.0f)
+		weightMultiplier(1.0f),
+		craters()
 	{
 		LOG_FUNC();
 	}

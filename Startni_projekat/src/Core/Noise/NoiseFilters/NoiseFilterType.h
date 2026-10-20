@@ -2,7 +2,7 @@
 #define NOISE_FILTER_TYPE_H
 
 enum FilterType {
-	Simple, Rigid
+	Simple, Rigid, Crater
 };
 
 #endif // !NOISE_FILTER_TYPE_H

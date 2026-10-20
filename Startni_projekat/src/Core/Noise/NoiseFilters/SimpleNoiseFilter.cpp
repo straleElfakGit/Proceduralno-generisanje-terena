@@ -18,6 +18,6 @@ float SimpleNoiseFilter::Evaluate(const glm::vec3& point)
         amplitude *= noiseSettings.persistance;
     }
 
-    noiseValue = std::max(0.0f, noiseValue - noiseSettings.minValue);
+    noiseValue = noiseValue - noiseSettings.minValue;
     return noiseValue * noiseSettings.strength;
 }
